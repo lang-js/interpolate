@@ -1,6 +1,6 @@
 {
   "name": "lang-js-interpolate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "interpolate into a translation",
   "main": "index.js",
   "directories": {
