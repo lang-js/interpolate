@@ -24,8 +24,5 @@
     "mocha": "^1.21.4",
     "node-polyglot": "^0.4.1",
     "should": "^4.0.4"
-  },
-  "dependencies": {
-    "directiv-test-benchmark": "^0.1.0"
   }
 }
