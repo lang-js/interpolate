@@ -1,0 +1,31 @@
+{
+  "name": "lang-js-interpolate",
+  "version": "0.1.0",
+  "description": "interpolate into a translation",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lang-js/interpolate.git"
+  },
+  "author": "Cameron Bytheway <bytheway.cameron@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lang-js/interpolate/issues"
+  },
+  "homepage": "https://github.com/lang-js/interpolate",
+  "devDependencies": {
+    "directiv-test-benchmark": "^0.1.0",
+    "mocha": "^1.21.4",
+    "node-polyglot": "^0.4.1",
+    "should": "^4.0.4"
+  },
+  "dependencies": {
+    "directiv-test-benchmark": "^0.1.0"
+  }
+}
