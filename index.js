@@ -74,7 +74,7 @@ function compile(string, opts) {
  * @return {String}
  */
 
-var re = /^\w+$/;
+var re = /^[\w\d]+$/;
 function formatProperty(prop) {
   if (!re.test(prop)) return '[' + JSON.stringify(prop) + ']';
   var int = parseInt(prop, 10);
