@@ -1,6 +1,6 @@
 {
   "name": "interpolate",
-  "version": "0.1.1",
+  "version": "1.0.1",
   "description": "interpolate into a translation",
   "repo": "lang-js/interpolate",
   "main": "index.js",
