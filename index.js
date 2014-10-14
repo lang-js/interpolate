@@ -62,7 +62,8 @@ function compile(string, opts) {
     // it's a interpolation part
     part = part.slice(open.length, -close.length);
     prop = formatProperty(part, params);
-    paramsObj[prop[1] || part] = 1;
+    part = prop[1] || part;
+    paramsObj[part] = (paramsObj[part] || 0) + 1;
     parts.push(prop[0] + fallback);
   }
 

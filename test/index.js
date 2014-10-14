@@ -13,31 +13,37 @@ describe('interpolate', function() {
     it('should compile a interpolation function', function() {
       var fn = interpolate('hello, %{name}');
       fn.should.be.a.function;
+      fn.params.should.eql({name: 1});
     });
 
     it('should correctly replace values', function() {
       var fn = interpolate('hello, %{name}');
       fn({name: 'Mike'}).should.eql(['hello, ', 'Mike']);
+      fn.params.should.eql({name: 1});
     });
 
     it('should correctly replace complex values', function() {
       var fn = interpolate('hello, %{name}');
       fn({name: [{complex: true}]}).should.eql(['hello, ', [{complex:true}]]);
+      fn.params.should.eql({name: 1});
     });
 
     it('should allow overriding begin and end delimeters', function() {
       var fn = interpolate('hello, {{name}}', {open: '{{', close: '}}'});
       fn({name: 'Brannon'}).should.eql(['hello, ', 'Brannon']);
+      fn.params.should.eql({name: 1});
     });
 
     it('should return undefined for missing parameters', function() {
       var fn = interpolate('hello, %{name}');
       fn().should.eql(['hello, ', undefined]);
+      fn.params.should.eql({name: 1});
     });
 
     it('should allow specifying a fallback value', function() {
       var fn = interpolate('hello, %{name}', {fallback: '...'});
       fn().should.eql(['hello, ', '...']);
+      fn.params.should.eql({name: 1});
     });
 
     it('should replace multiple values', function() {
@@ -47,6 +53,7 @@ describe('interpolate', function() {
         'family-name': 'Bytheway'
       };
       fn(params).should.eql(['hello, ', 'Cameron', ' ', 'Bytheway']);
+      fn.params.should.eql({'given-name': 1, 'family-name': 1});
     });
 
     it('should replace multiple instances of the same key', function() {
@@ -55,6 +62,7 @@ describe('interpolate', function() {
         'repeat': 'repeat'
       };
       fn(params).should.eql(['I ', 'repeat', ' ', 'repeat']);
+      fn.params.should.eql({repeat: 2});
     });
 
     it('should wrap a string with a yield function', function() {
@@ -65,6 +73,7 @@ describe('interpolate', function() {
         }
       };
       fn(params).should.eql(['if you want more, ', ['<a>', 'check us out!', '</a>']]);
+      fn.params.should.eql({action: 1});
     });
   });
 
