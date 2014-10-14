@@ -6,7 +6,7 @@ var Polyglot = require('node-polyglot');
 describe('interpolate', function() {
 
   it('should interpolate a string', function() {
-    interpolate.interpolate('hello, %{name}', {name: 'Bucky'}).should.eql('hello, Bucky');
+    interpolate.interpolate('hello, %{name}', {name: 'Joe'}).should.eql('hello, Joe');
   });
 
   describe('compile', function() {
@@ -41,7 +41,7 @@ describe('interpolate', function() {
     });
 
     it('should replace multiple values', function() {
-      var fn = interpolate('hello, %{given-name} %{family-name}', {fallback: '...'});
+      var fn = interpolate('hello, %{given-name} %{family-name}');
       var params = {
         'given-name': 'Cameron',
         'family-name': 'Bytheway'
@@ -50,12 +50,21 @@ describe('interpolate', function() {
     });
 
     it('should replace multiple instances of the same key', function() {
-      var fn = interpolate('I %{repeat} %{repeat}', {fallback: '...'});
+      var fn = interpolate('I %{repeat} %{repeat}');
       var params = {
-        'repeat': 'repeat',
         'repeat': 'repeat'
       };
       fn(params).should.eql(['I ', 'repeat', ' ', 'repeat']);
+    });
+
+    it('should wrap a string with a yield function', function() {
+      var fn = interpolate('if you want more, %{action : check us out!}');
+      var params = {
+        action: function(value) {
+          return ['<a>', value, '</a>'];
+        }
+      };
+      fn(params).should.eql(['if you want more, ', ['<a>', 'check us out!', '</a>']]);
     });
   });
 
@@ -73,6 +82,14 @@ describe('interpolate', function() {
       describe('nine keys', function() {
         var fn = interpolate(nine);
         benchmark(1000000, 1, fn.bind(null, nineParams));
+      });
+      describe('yield function', function() {
+        var fn = interpolate('you should %{cta : check us out}');
+        benchmark(1000000, 1, fn.bind(null, {
+          cta: function(cta) {
+            return cta + '!';
+          }
+        }));
       });
     });
 

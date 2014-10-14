@@ -34,9 +34,10 @@ function interpolate(string, params, opts) {
 
 function compile(string, opts) {
   opts = opts || {};
-  var open = opts.open || '%{';
+  var open = escapeRegex(opts.open || '%{');
   var close = opts.close || '}';
-  var re = new RegExp('(' + open + ' *[\\-\\d\\w\\.]+ *' + close + ')', 'g');
+  var char = close.charAt(0);
+  var re = new RegExp('(' + escapeRegex(open) + ' *[^' + escapeRegex(char) + ']+ *' + escapeRegex(close) + ')', 'g');
 
   var params = 'params';
 
@@ -45,8 +46,8 @@ function compile(string, opts) {
         '';
 
   var rawParts = string.split(re);
-  var parts = [];
-  for (var i = 0, l = rawParts.length, part; i < l; i++) {
+  var parts = [], paramsObj = {};
+  for (var i = 0, l = rawParts.length, part, prop; i < l; i++) {
     part = rawParts[i];
 
     // skip the blank parts
@@ -60,24 +61,63 @@ function compile(string, opts) {
 
     // it's a interpolation part
     part = part.slice(open.length, -close.length);
-    parts.push(params + formatProperty(part) + fallback);
+    prop = formatProperty(part, params);
+    paramsObj[prop[1] || part] = 1;
+    parts.push(prop[0] + fallback);
   }
 
-  return new Function(params,
+  var fn = new Function('exec, ' + params,
     params + ' = ' + params + ' || {};\nreturn [' + parts.join(', ') + '];');
+  fn.params = paramsObj;
+  return fn.bind(null, exec);
+}
+
+/**
+ * Execute a function for a block
+ *
+ * @param {String} name
+ * @param {String} contents
+ * @param {Object} params
+ * @return {Any}
+ */
+
+function exec(name, contents, params) {
+  var fn = params[name];
+  var type = typeof fn;
+  if (type === 'function') return fn(contents, params);
+  return type === 'undefined' ? contents : fn;
+}
+
+/**
+ * Escape any reserved regex characters
+ *
+ * @param {String} str
+ * @return {String}
+ */
+
+function escapeRegex(str) {
+  return str.replace(/[\^\-\]\\]/g, function(c) {
+    return '\\' + c;
+  });
 }
 
 /**
  * Format a property accessor
  *
  * @param {String} prop
+ * @param {String} params
  * @return {String}
  */
 
 var re = /^[\w\d]+$/;
-function formatProperty(prop) {
-  if (!re.test(prop)) return '[' + JSON.stringify(prop) + ']';
+function formatProperty(prop, params) {
+  if (!re.test(prop)) {
+    var parts = prop.split(/ *: */);
+    if (parts.length === 1) return [params + '[' + JSON.stringify(prop) + ']'];
+
+    return ['exec("' + parts[0] + '", "' + parts[1] + '", ' + params + ')', parts[0]];
+  }
   var int = parseInt(prop, 10);
-  if (Number.isNaN(int)) return '.' + prop;
-  return '[' + prop + ']';
+  if (isNaN(int)) return [params + '.' + prop];
+  return [params + '[' + prop + ']'];
 }
