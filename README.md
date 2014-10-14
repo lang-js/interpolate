@@ -1,4 +1,4 @@
 interpolate
 ===========
 
-interpolate into a translation
+interpolate a string template

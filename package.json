@@ -1,7 +1,7 @@
 {
   "name": "lang-js-interpolate",
-  "version": "0.1.1",
-  "description": "interpolate into a translation",
+  "version": "1.0.0",
+  "description": "interpolate a string template",
   "main": "index.js",
   "directories": {
     "test": "test"
