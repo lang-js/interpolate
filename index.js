@@ -67,8 +67,9 @@ function compile(string, opts) {
     parts.push(prop[0] + fallback);
   }
 
-  var fn = new Function('exec, ' + params,
-    params + ' = ' + params + ' || {};\nreturn [' + parts.join(', ') + '];').bind(null, exec);
+  var body = 'function(' + params + '){' + params + ' = ' + params + ' || {};return [' + parts.join(', ') + '];}';
+
+  var fn = (new Function('exec', 'return ' + body))(exec);
   fn.params = paramsObj;
   return fn;
 }

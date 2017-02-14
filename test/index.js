@@ -12,7 +12,6 @@ describe('interpolate', function() {
   describe('compile', function() {
     it('should compile a interpolation function', function() {
       var fn = interpolate('hello, %{name}');
-      fn.should.be.a.function;
       fn.params.should.eql({name: 1});
     });
 
